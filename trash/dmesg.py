@@ -3,9 +3,12 @@
 from StringIO import StringIO
 import paramiko 
 
+f = open('ipadress.txt', 'r')
+host = f.read()
+
 class SshClient:
     "A wrapper of paramiko.SSHClient"
-    TIMEOUT = 4
+    TIMEOUT = .004
 
     def __init__(self, host, port, username, password, key=None, passphrase=None):
         self.username = username
@@ -14,7 +17,7 @@ class SshClient:
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         if key is not None:
             key = paramiko.RSAKey.from_private_key(StringIO(key), password=passphrase)
-        self.client.connect(host, port, username=username, password=password, pkey=key, timeout=self.TIMEOUT)
+        self.client.connect(host, port, username=username, password=password, pkey=key, timeout=2)
 
     def close(self):
         if self.client is not None:
@@ -35,9 +38,12 @@ class SshClient:
                 'retval': stdout.channel.recv_exit_status()}
 
 
-client = SshClient(host='192.168.1.21', port=22, username='odroid', password='odroid') 
-try:
-   ret = client.execute('dmesg', sudo=True)
-   print "  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"]
-finally:
-  client.close() 
+if __name__ == "__main__":
+    client = SshClient(host=host, port=22, username='odroid', password='odroid') 
+    try:
+       ret = client.execute('insmod PAF/energy.ko', sudo=True)
+       print "  ".join(ret["out"]), "  E ".join(ret["err"]), ret["retval"]
+       ret2 = client.execute('./PAF/pt-energy', sudo=True)
+       print "  ".join(ret2["out"]), "  E ".join(ret2["err"]), ret2["retval"]
+    finally:
+       client.close() 

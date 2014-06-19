@@ -1,4 +1,5 @@
 import paramiko
+import sys
 
 f = open('ipadress.txt', 'r')
 host = f.read()
@@ -13,6 +14,14 @@ def dijkstra(repeat, size):
 	time = net_dump[1].split()[1]
 	print "time: " + time
 
-dijkstra('', '');
+
+
+if len(sys.argv) > 2:
+	arg1 = sys.argv[1]
+	arg2 = sys.argv[2]
+else:
+	arg1 = ''
+	arg2 = ''
+dijkstra(arg1, arg2);
 
 client.close
