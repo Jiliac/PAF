@@ -24,7 +24,7 @@ def runbenchmark(program):
 	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	client.connect(host, username='odroid', password='odroid')
 	
-	client.exec_command('./PAF/pt-energy > ./PAF/data/' + filename)
+	client.exec_command('./PAF/pt-energy | tr -d "[]"> ./PAF/data/' + filename)
 	cmd = './PAF/benchmarks/' + program + ' ' + arg1 + ' ' + arg2
 	stdin, stdout, stderr = client.exec_command(cmd)
 	print program
