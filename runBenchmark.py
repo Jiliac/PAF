@@ -1,5 +1,6 @@
 import paramiko
 import sys
+import time
 
 f = open('ipadress.txt', 'r')
 host = f.read()
@@ -19,6 +20,7 @@ else:
 # name of record file
 filename = program + '-' + str(float(arg1)/1000000) + 'M-' + arg2 + '-' + 'EnergyData-' + str(frequency/1000000) + 'Ghz.txt'
 
+
 def runbenchmark(program):
 	client = paramiko.SSHClient()
 	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -30,6 +32,8 @@ def runbenchmark(program):
 	print program
 	print stdout.read()
 	
+	time.sleep(3)
+	client.exec_command('pkill pt-energy')
 	client.close()
 
 runbenchmark(program)
